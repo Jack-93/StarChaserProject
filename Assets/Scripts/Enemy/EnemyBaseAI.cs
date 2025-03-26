@@ -4,63 +4,58 @@ using UnityEngine;
 
 public class EnemyBaseAI : MonoBehaviour
 {
-    // 적 스펙 기본 틀 ( 캐릭터적인 특성은 캐릭터와 비슷함 )
-    public int MaxHP = 100;               // 적의 최대 체력
-    public float attackRange = 3.0f;      // 적의 공격 범위
-    public float attackDamage = 10.0f;    // 적의 기본 공격 데미지
+    // 적 스펙 기본 변수
+    public float attackRange = 3.0f;       // 적의 공격 범위
+    public int attackDamage = 10;         // 적의 기본 공격 데미지
+
     protected float attackCooldown = 2.0f; // 공격 대기 시간
-    private float attackCooldownTimer;
+    private float attackCooldownTimer;    // 공격 쿨타임 타이머
+
+    protected CharacterBaseAI targetCharacter;
+    // public EnemyBaseAI targetEnemy;
+
 
     private void Update()
     {
-        AttackPlayerInRange();
+        AttackPlayerInRange(); // 범위 내 아군을 탐색하고 공격
     }
 
     private void AttackPlayerInRange()
     {
-        // 공격 대기 시간 감소, 현실 시간에 따라 감소
+        // 공격 대기 시간 감소
         attackCooldownTimer -= Time.deltaTime;
 
-        // 범위 안에 있는 아군을 탐색 (콜라이더 탐색)
+        // 공격 범위 내 캐릭터(아군) 탐색
         Collider2D[] playersInRange = Physics2D.OverlapCircleAll(transform.position, attackRange);
 
-        foreach (Collider2D player in playersInRange)
+        foreach (Collider2D collider in playersInRange)
         {
-            if (player.CompareTag("Player")) // Player 태그를 가진 아군 -> 가장 빠름
+            // CharacterBaseAI 컴포넌트를 가진 객체를 탐색
+            CharacterBaseAI player = collider.GetComponent<CharacterBaseAI>();
+            if (player != null)
             {
-                if (attackCooldownTimer <= 0)
+                // 유효성 검사 (체력은 Health 클래스 활용)
+                Health playerHealth = player.GetComponent<Health>();
+                if (playerHealth != null && playerHealth.currentHealth > 0)
                 {
-                    Debug.Log($"Enemy attacks {player.name} for {attackDamage} damage.");
-                    attackCooldownTimer = attackCooldown;
-                    // 여기에 아군 체력 감소 로직 추가 가능
+                    if (attackCooldownTimer <= 0) // 공격 쿨타임 확인
+                    {
+                        Debug.Log($"Enemy attacks {player.name} for {attackDamage} damage.");
+
+                        attackCooldownTimer = attackCooldown; // 쿨타임 초기화
+
+                        playerHealth.TakeDamage(attackDamage); // 체력 감소
+                        Debug.Log($"{player.name} now has {playerHealth.currentHealth} health remaining.");
+                    }
                 }
             }
         }
     }
 
-    // 적 체력 감소 메서드
-    public void TakeDamage(int damage)
-    {
-        MaxHP -= damage;
-        Debug.Log($"Enemy takes {damage} damage. Remaining HP: {MaxHP}");
-        if (MaxHP <= 0)
-        {
-            Die();
-        }
-    }
-
-    // 적이 사망했을 때의 동작
-    protected virtual void Die()
-    {
-        Debug.Log("Enemy has been defeated.");
-        Destroy(gameObject);
-    }
-
-    // 적의 공격 범위를 시각적으로 표시 (디버그용)
+    // 디버그용: 적의 공격 범위를 시각적으로 표시
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
-
 }

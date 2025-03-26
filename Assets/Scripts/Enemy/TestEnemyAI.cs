@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class TestEnemyAI : EnemyBaseAI
 {
-    private void Start()
-    {
-        MaxHP = 150;
-    }
+ 
+
 }
