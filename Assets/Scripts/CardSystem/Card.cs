@@ -19,7 +19,7 @@ public class Card
 
 
     // 카드 생성자 (상세정보 기입)
-    public Card(string name, string desc, CardGrade grade, Sprite image, string skillN, string skillD,
+    public Card(string name, string desc, CardGrade grade, Sprite image, string skillN, string skillDes,
         int attack, int defense, int health)
     {
         this.cardName = name;
@@ -27,7 +27,7 @@ public class Card
         this.grade = grade;
         this.cardImage = image;
         this.skillName = skillN;
-        this.skillDescription = skillD;
+        this.skillDescription = skillDes;
         this.attack = attack;
         this.defense = defense;
         this.health = health;

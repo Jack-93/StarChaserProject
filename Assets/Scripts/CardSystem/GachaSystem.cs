@@ -29,12 +29,12 @@ public class GachaSystem : MonoBehaviour
             // »Ì±â È®·ü Àû¿ëµÊ
             if (pulledCard.cardName == "Caesar")
             {
-                Sprite caesarSprite = Resources.Load<Sprite>("Art/Cards/Superial/Caesar");
+                Sprite caesarSprite = Resources.Load<Sprite>("Art/CardImage/Superial/Caesar");
                 pulledCard = SuperialCards.CreateCaesarCard(caesarSprite);
             }
             else if (pulledCard.cardName == "Battleship")
             {
-                Sprite battleshipSprite = Resources.Load<Sprite>("Art/Cards/Elite/Battleship");
+                Sprite battleshipSprite = Resources.Load<Sprite>("Art/CardImage/Elite/Battleship");
                 pulledCard = EliteCards.CreateBattleshipCard(battleshipSprite);
             }
 
